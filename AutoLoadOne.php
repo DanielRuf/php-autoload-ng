@@ -893,8 +893,6 @@ EOD;
                     $urlFull = $this->dirNameLinux($full); ///folder/subfolder/f1
                     $basefile = basename($f); //F1.php
 
-                    // echo "$dir $full $urlFull $basefile<br>";
-
                     if ($runMe != '') {
                         switch ($runMe) {
                             case '@autorun first':
@@ -928,7 +926,6 @@ EOD;
                                 // adding as a folder
                                 $exclude = false;
                                 if (in_array($nsp, $this->excludeNSArr) && $nsp != '') {
-                                    //if ($this->inExclusion($nsp, $this->excludeNSArr) && $nsp!="") {
                                     $this->addLog("\tIgnoring namespace (path specified in <b>Excluded NameSpace</b>): <b>$altUrl -> $full</b>",
                                         'warning');
                                     $exclude = true;
