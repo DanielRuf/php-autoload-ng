@@ -1,0 +1,10 @@
+{
+    "blacklist": [
+        ".github",
+        ".scannerwork",
+        "doc",
+        "examples",
+        "tests",
+        "tools"
+    ]
+}
