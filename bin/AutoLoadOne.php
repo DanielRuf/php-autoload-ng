@@ -776,14 +776,12 @@ EOD;
                                     if ($this->stop) {
                                         die(1);
                                     }
-                                } else {
-                                    if ((!in_array($altUrl, $this->excludeNSArr) || $nsp == '')
-                                        && !$this->inExclusion($urlFull, $this->excludePathArr)
-                                    ) {
-                                        $this->addLog("Adding Full: <b>$altUrl -> $full</b> to class <i>$cs</i>");
-                                        $nsAlt[$altUrl] = $full;
-                                        $pathAbsolute[$altUrl] = $filesAbsolute[$key];
-                                    }
+                                } else if ((!in_array($altUrl, $this->excludeNSArr) || $nsp == '')
+                                    && !$this->inExclusion($urlFull, $this->excludePathArr)
+                                ) {
+                                    $this->addLog("Adding Full: <b>$altUrl -> $full</b> to class <i>$cs</i>");
+                                    $nsAlt[$altUrl] = $full;
+                                    $pathAbsolute[$altUrl] = $filesAbsolute[$key];
                                 }
                             }
                         }
