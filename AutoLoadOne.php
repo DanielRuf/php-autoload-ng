@@ -1079,10 +1079,8 @@ EOD;
                         return true;
                     }
                 }
-                if (strpos($ex, '*') === false) {
-                    if ($path == $ex) {
-                        return true;
-                    }
+                if (strpos($ex, '*') === false && $path == $ex) {
+                    return true;
                 }
             }
         }
