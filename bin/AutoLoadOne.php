@@ -157,7 +157,6 @@ eot;
             $this->externalPath = '';
             $this->excludePath = '';
         }
-
         echo '-folder ' . $this->rooturl . " (folder to scan)\n";
         echo '-filegen ' . $this->fileGen . ' (folder where autoload' . $this->extension . " will be generate)\n";
         echo '-save ' . ($this->savefile ? 'yes' : 'no') . " (save filegen)\n";
@@ -197,83 +196,6 @@ eot;
                 $msg = 'Unknown error';
         }
         throw new Exception('JSON encoding failed: ' . $msg);
-    }
-
-    /**
-     * @return bool|int
-     */
-    private function saveParam()
-    {
-        if (!_AUTOLOAD_SAVEPARAM) {
-            return false;
-        }
-        $param = [];
-        $param['rooturl'] = $this->rooturl;
-        $param['fileGen'] = $this->fileGen;
-        $param['savefile'] = $this->savefile;
-        $param['compression'] = $this->compression;
-        $param['savefileName'] = $this->savefileName;
-        $param['excludeNS'] = $this->excludeNS;
-        $param['excludePath'] = $this->excludePath;
-        $param['externalPath'] = $this->externalPath;
-        $remote = [];
-        $remote['rooturl'] = '';
-        $remote['destination'] = $this->fileGen;
-        $remote['name'] = '';
-        $remoteint = '1';
-        $generatedvia = 'AutoloadOne';
-        $date = date('Y/m/d h:i');
-
-        return file_put_contents(
-            $this->fileConfig,
-            $this->encode(
-                [
-                    'application' => $generatedvia,
-                    'generated' => $date,
-                    'local' => $param,
-                    'remote' => [$remoteint => $remote]
-                ]
-            )
-        );
-    }
-
-    /**
-     * @return bool
-     */
-    private function loadParam()
-    {
-        if (!_AUTOLOAD_SAVEPARAM) {
-            return false;
-        }
-        $txt = file_get_contents($this->fileConfig);
-        if ($txt === false) {
-            return false;
-        }
-        $param = json_decode($txt, true);
-        $this->fileGen = $param['local']['fileGen'];
-        $this->fileGen = ($this->fileGen == '.') ? $this->rooturl : $this->fileGen;
-        $this->savefile = $param['local']['savefile'];
-        $this->compression = $param['local']['compression'];
-        $this->savefileName = $param['local']['savefileName'];
-        $this->excludeNS = $param['local']['excludeNS'];
-        $this->excludePath = $param['local']['excludePath'];
-        $this->externalPath = $param['local']['externalPath'];
-        return true;
-    }
-
-    /**
-     * @param $value
-     *
-     * @return string
-     */
-    private function cleanInputFolder($value)
-    {
-        $v = str_replace("\r\n", "\n", $value); // remove windows line carriage
-        $v = str_replace(",\n", "\n", $v); // remove previous ,\n if any and converted into \n. It avoids duplicate ,,\n
-        $v = str_replace("\n", ",\n", $v); // we add ,\n again.
-        $v = str_replace('\\,', ',', $v); // we remove trailing \
-        $v = str_replace('/,', ',', $v); // we remove trailing /
-        return $v;
     }
 
     /**
@@ -452,7 +374,6 @@ EOD;
         $custom = $this->createArrayPHP($namespacesAlt);
         $htmlCommonAbsolute = $this->createArrayPHP($commonAbsolute);
         $include = $this->createArrayPHP($namespaces);
-
         $htmlCommonNameAbs = $this->createArrayPHP($commonNameAbs);
 
         $includeAbsolute = '';
@@ -481,7 +402,6 @@ EOD;
         $template = str_replace('{{includeabsolute}}', $includeAbsolute, $template);
         $template = str_replace('{{includeCommon}}', $htmlCommonNameAbs, $template);
         $template = str_replace('{{tempname}}', uniqid('s'), $template);
-
         $template = str_replace('{{autorun}}', $autorun, $template);
         $template = str_replace('{{version}}', $this::VERSION, $template);
         $template = str_replace('{{extension}}', $this->extension, $template);
@@ -645,7 +565,6 @@ EOD;
             }
 
             if ($isClass) {
-
                 // encontramos una clase
                 $min = min($p + 30, count($tokens) - 1);
                 for ($i = $p + 2; $i < $min; $i++) {
@@ -662,7 +581,6 @@ EOD;
 
     public function genPath($path)
     {
-
         $path = $this->fixSeparator($path);
 
         if (strpos($path, $this->baseGen) == 0) {
@@ -682,7 +600,6 @@ EOD;
             $r = str_repeat('/..', $c);
             // moving up the relative path
             $r2 = substr($path, $baseCommon);
-
             return $r . $r2;
         }
         return substr($path, strlen($this->baseGen));
@@ -751,9 +668,9 @@ EOD;
             $pathAbsolute = [];
             $autoruns = [];
             $autorunsFirst = [];
+
             $this->excludeNSArr = str_replace(["\n", "\r", ' '], '', $this->excludeNS);
             $this->excludeNSArr = explode(',', $this->excludeNSArr);
-
             $this->excludePathArr = $this->fixSeparator($this->excludePath);
             $this->excludePathArr = str_replace(["\n", "\r"], '', $this->excludePath);
             $this->excludePathArr = explode(',', $this->excludePathArr);
@@ -832,7 +749,6 @@ EOD;
                                     );
                                     $exclude = true;
                                 }
-
                                 if (!$exclude) {
                                     if ($nsp == '') {
                                         $this->addLog("Adding Full map (empty namespace): <b>$altUrl -> $full</b> to class <i>$cs</i>");
