@@ -536,9 +536,6 @@ EOD;
         //$commonNameSpace=$this->compress($namespaces);
         $commonNameAbs=$this->compress($namespaces);
 
-        
-        
-        
         $custom = $this->createArrayPHP($namespacesAlt);
         $htmlCommonAbsolute = $this->createArrayPHP($commonAbsolute);
         $include = $this->createArrayPHP($namespaces);
