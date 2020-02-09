@@ -26,7 +26,7 @@ if (!defined('_AUTOLOAD_SAVEPARAM')) {
     define('_AUTOLOAD_SAVEPARAM', true);
 } // true if you want to save the parameters.
 //*************************************************************
-@ini_set('max_execution_time', 600); // Limit of 10 minutes.
+ini_set('max_execution_time', 600); // Limit of 10 minutes.
 
 /**
  * Class AutoLoadOne.
@@ -244,7 +244,7 @@ eot;
         $generatedvia = 'AutoloadOne';
         $date = date('Y/m/d h:i');
 
-        return @file_put_contents(
+        return file_put_contents(
             $this->fileConfig,
             $this->encode(
                 [
@@ -265,42 +265,42 @@ eot;
         if (!_AUTOLOAD_SAVEPARAM) {
             return false;
         }
-        $txt = @file_get_contents($this->fileConfig);
+        $txt = file_get_contents($this->fileConfig);
         if ($txt === false) {
             return false;
         }
         $param = json_decode($txt, true);
-        $this->fileGen = @$param['local']['fileGen'];
+        $this->fileGen = $param['local']['fileGen'];
         $this->fileGen = ($this->fileGen == '.') ? $this->rooturl : $this->fileGen;
-        $this->savefile = @$param['local']['savefile'];
-        $this->compression = @$param['local']['compression'];
-        $this->savefileName = @$param['local']['savefileName'];
-        $this->excludeNS = @$param['local']['excludeNS'];
-        $this->excludePath = @$param['local']['excludePath'];
-        $this->externalPath = @$param['local']['externalPath'];
+        $this->savefile = $param['local']['savefile'];
+        $this->compression = $param['local']['compression'];
+        $this->savefileName = $param['local']['savefileName'];
+        $this->excludeNS = $param['local']['excludeNS'];
+        $this->excludePath = $param['local']['excludePath'];
+        $this->externalPath = $param['local']['externalPath'];
         return true;
     }
 
     private function initWeb()
     {
-        @ob_start();
+        ob_start();
         // Not in cli-mode
-        @session_start();
-        $this->logged = @$_SESSION['log'];
+        session_start();
+        $this->logged = $_SESSION['log'];
         if (!$this->logged) {
-            $user = @$_POST['user'];
-            $password = @$_POST['password'];
+            $user = $_POST['user'];
+            $password = $_POST['password'];
             if (($user == _AUTOLOAD_USER && $password == _AUTOLOAD_PASSWORD) || _AUTOLOAD_ENTER) {
                 $_SESSION['log'] = '1';
                 $this->logged = 1;
             } else {
                 sleep(1); // sleep a second
                 $_SESSION['log'] = '0';
-                @session_destroy();
+                session_destroy();
             }
-            @session_write_close();
+            session_write_close();
         } else {
-            $this->button = @$_POST['button'];
+            $this->button = $_POST['button'];
             if (!$this->button) {
                 $loadOk = $this->loadParam();
                 if ($loadOk === false) {
@@ -309,28 +309,28 @@ eot;
                 }
             } else {
                 $this->debugMode = isset($_GET['debug']) ? true : false;
-                $this->rooturl = $this->removeTrailSlash(@$_POST['rooturl'] ? $_POST['rooturl'] : $this->rooturl);
-                $this->fileGen = $this->removeTrailSlash(@$_POST['fileGen'] ? $_POST['fileGen'] : $this->fileGen);
+                $this->rooturl = $this->removeTrailSlash($_POST['rooturl'] ? $_POST['rooturl'] : $this->rooturl);
+                $this->fileGen = $this->removeTrailSlash($_POST['fileGen'] ? $_POST['fileGen'] : $this->fileGen);
                 $this->fileGen = ($this->fileGen == '.') ? $this->rooturl : $this->fileGen;
                 $this->excludeNS = $this->cleanInputFolder(
                     $this->removeTrailSlash(
-                        @$_POST['excludeNS'] ? $_POST['excludeNS'] : $this->excludeNS
+                        $_POST['excludeNS'] ? $_POST['excludeNS'] : $this->excludeNS
                     )
                 );
                 $this->excludePath = $this->cleanInputFolder(
                     $this->removeTrailSlash(
-                        @$_POST['excludePath'] ? $_POST['excludePath'] : $this->excludePath
+                        $_POST['excludePath'] ? $_POST['excludePath'] : $this->excludePath
                     )
                 );
                 $this->externalPath = $this->cleanInputFolder(
                     $this->removeTrailSlash(
-                        @$_POST['externalPath'] ? $_POST['externalPath'] : $this->externalPath
+                        $_POST['externalPath'] ? $_POST['externalPath'] : $this->externalPath
                     )
                 );
-                $this->savefile = (@$_POST['savefile']) ? @$_POST['savefile'] : $this->savefile;
-                $this->savefileName = (@$_POST['savefileName']) ? @$_POST['savefileName'] : $this->savefileName;
-                $this->stop = @$_POST['stop'];
-                $this->compression = @$_POST['compression'];
+                $this->savefile = ($_POST['savefile']) ? $_POST['savefile'] : $this->savefile;
+                $this->savefileName = ($_POST['savefileName']) ? $_POST['savefileName'] : $this->savefileName;
+                $this->stop = $_POST['stop'];
+                $this->compression = $_POST['compression'];
                 $ok = $this->saveParam();
                 if ($ok === false) {
                     $this->addLog('Unable to save configuration file <b>' . $this->fileConfig
@@ -338,9 +338,9 @@ eot;
                 }
             }
             if ($this->button == 'logout') {
-                @session_destroy();
+                session_destroy();
                 $this->logged = 0;
-                @session_write_close();
+                session_write_close();
             }
         }
     }
@@ -501,7 +501,7 @@ function {{tempname}}__loadIfExists($filename, $key,$arrayName='')
         $fullFile = __DIR__ . "/" . {{tempname}}__replaceCurlyVariable($filename,$arrayName); // its relative to this path
     }
     /** @noinspection PhpIncludeInspection */
-    if ((@include $fullFile) === false) {
+    if ((include $fullFile) === false) {
         if ($GLOBALS['{{tempname}}__debug']) {
             throw  new Exception("AutoLoadOne Error: Loading file [" . __DIR__ . "/" . $filename . "] for class [" . basename($filename) . "]");
         } else {
@@ -554,7 +554,7 @@ EOD;
         $includeAbsolute = rtrim($includeAbsolute, ",\n");
         $autorun = ''; //
         foreach ($autoruns as $k => $v) {
-            $autorun .= "@include __DIR__.'$v';\n";
+            $autorun .= "include __DIR__.'$v';\n";
         }
         // 1024 is the memory used by code, *1.3 is an overhead, usually it's mess.
         $this->statByteUsedCompressed = (strlen($include) + strlen($includeAbsolute) + strlen($custom)) * 1.3 + 1024;
@@ -576,7 +576,7 @@ EOD;
         
         
         if ($this->savefile) {
-            $ok = @file_put_contents($file, $template);
+            $ok = file_put_contents($file, $template);
             if ($ok) {
                 $this->addLog("File <b>$file</b> generated", 'info');
             } else {
@@ -625,7 +625,7 @@ EOD;
         if ($dir === '') {
             return [];
         }
-        $ffs = @scandir($this->fixRelative($dir));
+        $ffs = scandir($this->fixRelative($dir));
         if ($ffs === false) {
             $this->addLog("\nError: Unable to reader folder [$dir]. Check the name of the folder and the permissions",
                 'error');
