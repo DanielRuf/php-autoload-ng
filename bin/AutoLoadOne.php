@@ -1,4 +1,6 @@
-<?php /** @noinspection HtmlUnknownAttribute */
+<?php
+
+/** @noinspection HtmlUnknownAttribute */
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
@@ -281,43 +283,44 @@ eot;
      *
      * @return array
      */
-    public function compress(&$paths) {
-        if(!$this->compression) {
+    public function compress(&$paths)
+    {
+        if (!$this->compression) {
             return [];
-        } 
-        $arr=$paths;
-        $foundIndex=0;
-        $found=[];
-        foreach($arr as $key=>$item) {
+        }
+        $arr = $paths;
+        $foundIndex = 0;
+        $found = [];
+        foreach ($arr as $key => $item) {
 
-            if(strlen($item)>10) { // we compress path of at least 20 characters.
-                $maxcount=0;
-                $last=strlen($item);
-                for($index=$last;$index>10;$index--) { // we compress up to 20 characters.
-                    $sum=0;
-                    $findme=substr($item,0,$index);
-                    foreach($arr as $item2) {
-                        if(strpos($item2,$findme)===0) {
-                            $sum+=$index; // it counts the number of characters
+            if (strlen($item) > 10) { // we compress path of at least 20 characters.
+                $maxcount = 0;
+                $last = strlen($item);
+                for ($index = $last; $index > 10; $index--) { // we compress up to 20 characters.
+                    $sum = 0;
+                    $findme = substr($item, 0, $index);
+                    foreach ($arr as $item2) {
+                        if (strpos($item2, $findme) === 0) {
+                            $sum += $index; // it counts the number of characters
                         }
                     }
-                    if($sum>$maxcount && $sum>=$index*2) { // it must save at least x2 the number of characters compressed
-                        $maxcount=$sum;
+                    if ($sum > $maxcount && $sum >= $index * 2) { // it must save at least x2 the number of characters compressed
+                        $maxcount = $sum;
                         $foundIndex++;
-                        $foundKey='|'.$foundIndex.'|';
+                        $foundKey = '|' . $foundIndex . '|';
                         // replace
-                        foreach($arr as $k2=>$item2) {
-                            if(strpos($item2,$findme)===0) {
-                                $arr[$k2]=str_replace($findme,$foundKey,$item2);
-                                $sum+=$index; // it counts the number of characters
+                        foreach ($arr as $k2 => $item2) {
+                            if (strpos($item2, $findme) === 0) {
+                                $arr[$k2] = str_replace($findme, $foundKey, $item2);
+                                $sum += $index; // it counts the number of characters
                             }
                         }
-                        $found[$foundIndex]=$findme;
+                        $found[$foundIndex] = $findme;
                     }
                 }
             }
         }
-        $paths=$arr; 
+        $paths = $arr;
         return $found;
     }
 
@@ -442,16 +445,16 @@ spl_autoload_register(function ($class_name) {
 EOD;
         $includeNotCompressed = $this->createArrayPHP($namespaces);
         $customNotCompressed = $this->createArrayPHP($namespacesAlt);
-        
-        $commonAbsolute=$this->compress($namespacesAlt);
-        $commonNameAbs=$this->compress($namespaces);
+
+        $commonAbsolute = $this->compress($namespacesAlt);
+        $commonNameAbs = $this->compress($namespaces);
 
         $custom = $this->createArrayPHP($namespacesAlt);
         $htmlCommonAbsolute = $this->createArrayPHP($commonAbsolute);
         $include = $this->createArrayPHP($namespaces);
-        
+
         $htmlCommonNameAbs = $this->createArrayPHP($commonNameAbs);
-        
+
         $includeAbsolute = '';
         foreach ($pathAbsolute as $k => $v) {
             if ($v) {
@@ -465,8 +468,12 @@ EOD;
         }
         // 1024 is the memory used by code, *1.3 is an overhead, usually it's mess.
         $this->statByteUsedCompressed = (strlen($include) + strlen($includeAbsolute) + strlen($custom)) * 1.3 + 1024;
-        $this->statByteUsed = (strlen($includeNotCompressed) + strlen($htmlCommonAbsolute)+strlen($htmlCommonNameAbs)
-                + strlen($includeAbsolute) + strlen($customNotCompressed)) * 1.3 + 1024;
+        $this->statByteUsed = (strlen($includeNotCompressed)
+            + strlen($htmlCommonAbsolute)
+            + strlen($htmlCommonNameAbs)
+            + strlen($includeAbsolute)
+            + strlen($customNotCompressed))
+            * 1.3 + 1024;
 
         $template = str_replace('{{custom}}', $custom, $template);
         $template = str_replace('{{include}}', $include, $template);
@@ -485,8 +492,10 @@ EOD;
             if ($ok) {
                 $this->addLog("File <b>$file</b> generated", 'info');
             } else {
-                $this->addLog("Unable to write file <b>$file</b>. Check the folder and permissions. You could write it manually.",
-                    'error');
+                $this->addLog(
+                    "Unable to write file <b>$file</b>. Check the folder and permissions. You could write it manually.",
+                    'error'
+                );
                 $this->statError++;
             }
             $this->addLog('&nbsp;');
@@ -494,15 +503,15 @@ EOD;
 
         return $template;
     }
-    private function createArrayPHP($array) {
+    private function createArrayPHP($array)
+    {
         $result = '';
         foreach ($array as $k => $v) {
-            if(is_numeric($k)) {
+            if (is_numeric($k)) {
                 $result .= "\t$k => '$v',\n";
             } else {
-                $result .= "\t'$k' => '$v',\n";    
+                $result .= "\t'$k' => '$v',\n";
             }
-            
         }
         return rtrim($result, ",\n");
     }
@@ -530,8 +539,10 @@ EOD;
         }
         $ffs = scandir($this->fixRelative($dir));
         if ($ffs === false) {
-            $this->addLog("\nError: Unable to reader folder [$dir]. Check the name of the folder and the permissions",
-                'error');
+            $this->addLog(
+                "\nError: Unable to reader folder [$dir]. Check the name of the folder and the permissions",
+                'error'
+            );
             $this->statError++;
 
             return [];
@@ -624,7 +635,8 @@ EOD;
                 && $tokens[$p + 1][0] == T_WHITESPACE
             ) {
                 $isClass = true;
-                if (is_array($tokens[$p - 1]) && $tokens[$p - 1][0] == T_PAAMAYIM_NEKUDOTAYIM
+                if (
+                    is_array($tokens[$p - 1]) && $tokens[$p - 1][0] == T_PAAMAYIM_NEKUDOTAYIM
                     && $tokens[$p - 1][1] == '::'
                 ) {
                     // /namespace/Nameclass:class <-- we skip this case.
@@ -800,18 +812,24 @@ EOD;
                                 // adding as a folder
                                 $exclude = false;
                                 if (in_array($nsp, $this->excludeNSArr) && $nsp != '') {
-                                    $this->addLog("\tIgnoring namespace (path specified in <b>Excluded NameSpace</b>): <b>$altUrl -> $full</b>",
-                                        'warning');
+                                    $this->addLog(
+                                        "\tIgnoring namespace (path specified in <b>Excluded NameSpace</b>): <b>$altUrl -> $full</b>",
+                                        'warning'
+                                    );
                                     $exclude = true;
                                 }
                                 if ($this->inExclusion($dir, $this->excludePathArr)) {
-                                    $this->addLog("\tIgnoring relative path (path specified in <b>Excluded Path</b>): <b>$altUrl -> $dir</b>",
-                                        'warning');
+                                    $this->addLog(
+                                        "\tIgnoring relative path (path specified in <b>Excluded Path</b>): <b>$altUrl -> $dir</b>",
+                                        'warning'
+                                    );
                                     $exclude = true;
                                 }
                                 if ($this->inExclusion($dirOriginal, $this->excludePathArr)) {
-                                    $this->addLog("\tIgnoring full path (path specified in <b>Excluded Path</b>): <b>$altUrl -> $dirOriginal</b>",
-                                        'warning');
+                                    $this->addLog(
+                                        "\tIgnoring full path (path specified in <b>Excluded Path</b>): <b>$altUrl -> $dirOriginal</b>",
+                                        'warning'
+                                    );
                                     $exclude = true;
                                 }
 
@@ -822,8 +840,10 @@ EOD;
                                         $pathAbsolute[$altUrl] = $filesAbsolute[$key];
                                     } else {
                                         if (isset($ns[$nsp])) {
-                                            $this->addLog("\tReusing the folder: <b>$nsp -> $dir</b> to class <i>$cs</i>",
-                                                'success');
+                                            $this->addLog(
+                                                "\tReusing the folder: <b>$nsp -> $dir</b> to class <i>$cs</i>",
+                                                'success'
+                                            );
                                         } else {
                                             $ns[$nsp] = $dir;
                                             $pathAbsolute[$nsp] = $filesAbsolute[$key];
@@ -837,8 +857,10 @@ EOD;
                                 // b) if namespace is already defined for a different folder.
                                 // c) multiple namespaces
                                 if (isset($nsAlt[$altUrl])) {
-                                    $this->addLog("\tError Conflict:Class with name <b>$altUrl -> $dir</b> is already defined. File $f",
-                                        'error');
+                                    $this->addLog(
+                                        "\tError Conflict:Class with name <b>$altUrl -> $dir</b> is already defined. File $f",
+                                        'error'
+                                    );
                                     $this->statConflict++;
                                     if ($this->stop) {
                                         die(1);
@@ -871,8 +893,13 @@ EOD;
                     $this->addLog("Adding file <b>$auto</b> Reason: <b>@autoload</b> found");
                 }
                 $autoruns = array_merge($autorunsFirst, $autoruns);
-                $this->result = $this->genautoload($this->fileGen . '/' . $this->getFileName(), $ns, $nsAlt,
-                    $pathAbsolute, $autoruns);
+                $this->result = $this->genautoload(
+                    $this->fileGen . '/' . $this->getFileName(),
+                    $ns,
+                    $nsAlt,
+                    $pathAbsolute,
+                    $autoruns
+                );
             }
             if ($this->statNumPHP === 0) {
                 $p = 100;
@@ -886,8 +913,10 @@ EOD;
             }
             $this->addLog('Number of Classes: <b>' . $this->statNumClass . '</b>', 'stat');
             $this->addLog('Number of Namespaces: <b>' . count($this->statNameSpaces) . '</b>', 'stat');
-            $this->addLog('<b>Number of Maps:</b> <b>' . (count($ns) + count($nsAlt)) . '</b> (you want to reduce it)',
-                'stat');
+            $this->addLog(
+                '<b>Number of Maps:</b> <b>' . (count($ns) + count($nsAlt)) . '</b> (you want to reduce it)',
+                'stat'
+            );
             $this->addLog('Number of PHP Files: <b>' . $this->statNumPHP . '</b>', 'stat');
             $this->addLog('Number of PHP Autorun: <b>' . count($autoruns) . '</b>', 'stat');
             $this->addLog('Number of conflicts: <b>' . $this->statConflict . '</b>', 'stat');
