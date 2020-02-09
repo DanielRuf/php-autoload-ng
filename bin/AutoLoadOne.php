@@ -915,7 +915,6 @@ EOD;
     {
         $t2 = microtime(true);
         echo "\n" . (round(($t2 - $this->t1) * 1000) / 1000) . " sec. Finished\n";
-        return;
     }
 } // end class AutoLoadOne
 
