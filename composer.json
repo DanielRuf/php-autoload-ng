@@ -4,7 +4,7 @@
   "type": "software",
   "keywords": ["php","autoload"],
   "homepage": "https://github.com/EFTEC/AutoLoadOne/tree/legacy",
-  "bin": ["AutoLoadOne.php"],
+  "bin": ["bin/AutoLoadOne.php"],
   "minimum-stability": "beta",
   "license": "MIT",
   "authors": [
