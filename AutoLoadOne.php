@@ -630,11 +630,9 @@ EOD;
         }
         foreach ($ffs as $ff) {
             if ($ff != '.' && $ff != '..') {
-                if (strlen($ff) >= 5) {
-                    if (substr($ff, -4) == $this->extension) {
-                        // PHP_OS_FAMILY=='Windows'
-                        $list[] = $dir . '/' . $ff;
-                    }
+                if (strlen($ff) >= 5 && substr($ff, -4) == $this->extension) {
+                    // PHP_OS_FAMILY=='Windows'
+                    $list[] = $dir . '/' . $ff;
                 }
                 if (is_dir($dir . '/' . $ff)) {
                     $this->listFolderFilesAlt($dir . '/' . $ff, $list);
