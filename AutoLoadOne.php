@@ -191,36 +191,11 @@ eot;
 
     public static function encode($data, $options = 448)
     {
-        if (PHP_VERSION_ID >= 50400) {
-            $json = json_encode($data, $options);
-            if (false === $json) {
-                self::throwEncodeError(json_last_error());
-            }
-
-            if (PHP_VERSION_ID < 50428 || (PHP_VERSION_ID >= 50500 && PHP_VERSION_ID < 50512)
-                || (defined('JSON_C_VERSION') && version_compare(phpversion('json'), '1.3.6', '<'))
-            ) {
-                $json = preg_replace('/\[\s+]/', '[]', $json);
-                $json = preg_replace('/{\s+}/', '{}', $json);
-            }
-
-            return $json;
-        }
-
-        $json = json_encode($data);
+        $json = json_encode($data, $options);
         if (false === $json) {
             self::throwEncodeError(json_last_error());
         }
-
-        $prettyPrint = (bool)($options & self::JSON_PRETTY_PRINT);
-        $unescapeUnicode = (bool)($options & self::JSON_UNESCAPED_UNICODE);
-        $unescapeSlashes = (bool)($options & self::JSON_UNESCAPED_SLASHES);
-
-        if (!$prettyPrint && !$unescapeUnicode && !$unescapeSlashes) {
-            return $json;
-        }
-
-        return self::format($json, $unescapeUnicode, $unescapeSlashes);
+        return $json;
     }
 
     private static function throwEncodeError($code)
@@ -242,97 +217,6 @@ eot;
                 $msg = 'Unknown error';
         }
         throw new Exception('JSON encoding failed: ' . $msg);
-    }
-
-    public static function format($json, $unescapeUnicode, $unescapeSlashes)
-    {
-        $result = '';
-        $pos = 0;
-        $strLen = strlen($json);
-        $indentStr = '    ';
-        $newLine = "\n";
-        $outOfQuotes = true;
-        $buffer = '';
-        $noescape = true;
-
-        for ($i = 0; $i < $strLen; $i++) {
-            $char = substr($json, $i, 1);
-
-            if ('"' === $char && $noescape) {
-                $outOfQuotes = !$outOfQuotes;
-            }
-
-            if (!$outOfQuotes) {
-                $buffer .= $char;
-                $noescape = '\\' === $char ? !$noescape : true;
-                continue;
-            } elseif ('' !== $buffer) {
-                if ($unescapeSlashes) {
-                    $buffer = str_replace('\\/', '/', $buffer);
-                }
-
-                if ($unescapeUnicode && function_exists('mb_convert_encoding')) {
-                    $buffer = preg_replace_callback('/(\\\\+)u([0-9a-f]{4})/i',
-                        function ($match) {
-                            $l = strlen($match[1]);
-
-                            if ($l % 2) {
-                                $code = hexdec($match[2]);
-
-                                if (0xD800 <= $code && 0xDFFF >= $code) {
-                                    return $match[0];
-                                }
-                                /** @noinspection PhpComposerExtensionStubsInspection */
-                                return str_repeat('\\', $l - 1) . mb_convert_encoding(
-                                        pack('H*', $match[2]),
-                                        'UTF-8',
-                                        'UCS-2BE'
-                                    );
-                               
-                            }
-
-                            return $match[0];
-                        },
-                        $buffer);
-                }
-
-                $result .= $buffer . $char;
-                $buffer = '';
-                continue;
-            }
-
-            if (':' === $char) {
-                $char .= ' ';
-            } elseif ('}' === $char || ']' === $char) {
-                $pos--;
-                $prevChar = substr($json, $i - 1, 1);
-
-                if ('{' !== $prevChar && '[' !== $prevChar) {
-                    $result .= $newLine;
-                    for ($j = 0; $j < $pos; $j++) {
-                        $result .= $indentStr;
-                    }
-                } else {
-                    $result = rtrim($result);
-                }
-            }
-
-            $result .= $char;
-
-            if (',' === $char || '{' === $char || '[' === $char) {
-                $result .= $newLine;
-
-                if ('{' === $char || '[' === $char) {
-                    $pos++;
-                }
-
-                for ($j = 0; $j < $pos; $j++) {
-                    $result .= $indentStr;
-                }
-            }
-        }
-
-        return $result;
     }
 
     /**
