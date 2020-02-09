@@ -24,9 +24,6 @@ ini_set('max_execution_time', 600); // Limit of 10 minutes.
 class AutoLoadOne
 {
     const VERSION = '1.17';
-    const JSON_UNESCAPED_SLASHES = 64;
-    const JSON_PRETTY_PRINT = 128;
-    const JSON_UNESCAPED_UNICODE = 256;
 
     public $rooturl = '';
     public $fileGen = '';
