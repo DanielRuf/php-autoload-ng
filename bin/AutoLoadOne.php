@@ -104,7 +104,6 @@ class AutoLoadOne
         if (count($argv) >= $p + 1) {
             return $this->removeTrailSlash($argv[$p + 1]);
         }
-
         return '';
     }
 
@@ -438,7 +437,6 @@ EOD;
     {
         $arr = [];
         $this->listFolderFilesAlt($dir, $arr);
-
         return $arr;
     }
 
@@ -476,7 +474,6 @@ EOD;
                 }
             }
         }
-
         return $list;
     }
 
