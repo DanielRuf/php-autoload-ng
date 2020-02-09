@@ -366,7 +366,9 @@ eot;
      * @return array
      */
     public function compress(&$paths) {
-        if(!$this->compression) return []; 
+        if(!$this->compression) {
+            return [];
+        } 
         $arr=$paths;
         $foundIndex=0;
         $found=[];
