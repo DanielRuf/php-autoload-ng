@@ -1105,20 +1105,14 @@ EOD;
         return false;
     }
 
-    public function startwith($string, $test)
+    public function startswith($string, $test)
     {
-        return strpos($string, $test) === 0;
+        return substr_compare($string, $test, 0, strlen($test)) === 0;
     }
 
     public function endswith($string, $test)
     {
-        $strlen = strlen($string);
-        $testlen = strlen($test);
-        if ($testlen > $strlen) {
-            return false;
-        }
-
-        return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
+        return substr_compare($strig, $test, -strlen($test)) === 0;
     }
 
     public function render()
