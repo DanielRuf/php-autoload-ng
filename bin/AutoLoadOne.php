@@ -526,9 +526,8 @@ EOD;
     {
         if (strpos($path, '..') !== false) {
             return getcwd() . '/' . $path;
-        } else {
-            return $path;
         }
+        return $path;
     }
 
     public function listFolderFilesAlt($dir, &$list)
@@ -681,11 +680,8 @@ EOD;
             $r2 = substr($path, $baseCommon);
 
             return $r . $r2;
-        } else {
-            $r = substr($path, strlen($this->baseGen));
         }
-
-        return $r;
+        return substr($path, strlen($this->baseGen));
     }
 
     public function fixSeparator($fullUrl)
@@ -724,9 +720,8 @@ EOD;
     {
         if (strpos($this->savefileName, '.php') === false) {
             return $this->savefileName . $this->extension;
-        } else {
-            return $this->savefileName;
         }
+        return $this->savefileName;
     }
 
     public function process()
