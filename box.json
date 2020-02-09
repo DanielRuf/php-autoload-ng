@@ -6,5 +6,7 @@
         "examples",
         "tests",
         "tools"
-    ]
+    ],
+    "chmod": "0700",
+    "output": "dist/autoloadone.phar"
 }
