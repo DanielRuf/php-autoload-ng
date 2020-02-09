@@ -516,12 +516,10 @@ EOD;
                 if (strpos($token[1], '@autorun') !== false) {
                     if (strpos($token[1], '@autorunclass') !== false) {
                         $runMe = '@autorunclass';
+                    } else if (strpos($token[1], '@autorun first') !== false) {
+                        $runMe = '@autorun first';
                     } else {
-                        if (strpos($token[1], '@autorun first') !== false) {
-                            $runMe = '@autorun first';
-                        } else {
-                            $runMe = '@autorun';
-                        }
+                        $runMe = '@autorun';
                     }
                 }
             }
