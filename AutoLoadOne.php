@@ -690,10 +690,6 @@ EOD;
         }
         $nameSpace = '';
         $className = '';
-        /*echo "<pre>";
-        var_dump($tokens);
-        echo "</pre>";
-        */
         foreach ($tokens as $p => $token) {
             if (is_array($token) && $token[0] == T_NAMESPACE) {
                 // We found a namespace
