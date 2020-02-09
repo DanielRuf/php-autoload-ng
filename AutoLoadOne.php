@@ -533,7 +533,6 @@ EOD;
         $customNotCompressed = $this->createArrayPHP($namespacesAlt);
         
         $commonAbsolute=$this->compress($namespacesAlt);
-        //$commonNameSpace=$this->compress($namespaces);
         $commonNameAbs=$this->compress($namespaces);
 
         $custom = $this->createArrayPHP($namespacesAlt);
