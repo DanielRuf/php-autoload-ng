@@ -790,8 +790,7 @@ EOD;
         $url = trim($url);
         $dir = ($ifFullUrl) ? dirname($url) : $url;
         $dir = $this->fixSeparator($dir);
-        $dir = rtrim($dir, '/'); // remove trailing /
-        return $dir;
+        return rtrim($dir, '/'); // remove trailing /
     }
 
     public function addLog($txt, $type = '')
