@@ -751,17 +751,15 @@ EOD;
                                         $this->addLog("Adding Full map (empty namespace): <b>$altUrl -> $full</b> to class <i>$cs</i>");
                                         $nsAlt[$altUrl] = $full;
                                         $pathAbsolute[$altUrl] = $filesAbsolute[$key];
+                                    } else if (isset($ns[$nsp])) {
+                                        $this->addLog(
+                                            "\tReusing the folder: <b>$nsp -> $dir</b> to class <i>$cs</i>",
+                                            'success'
+                                        );
                                     } else {
-                                        if (isset($ns[$nsp])) {
-                                            $this->addLog(
-                                                "\tReusing the folder: <b>$nsp -> $dir</b> to class <i>$cs</i>",
-                                                'success'
-                                            );
-                                        } else {
-                                            $ns[$nsp] = $dir;
-                                            $pathAbsolute[$nsp] = $filesAbsolute[$key];
-                                            $this->addLog("Adding Folder as namespace: <b>$nsp -> $dir</b> to class <i>$cs</i>");
-                                        }
+                                        $ns[$nsp] = $dir;
+                                        $pathAbsolute[$nsp] = $filesAbsolute[$key];
+                                        $this->addLog("Adding Folder as namespace: <b>$nsp -> $dir</b> to class <i>$cs</i>");
                                     }
                                 }
                             } else {
