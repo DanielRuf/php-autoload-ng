@@ -316,7 +316,7 @@ eot;
                     }
                 }
             }
-        }   
+        }
         $paths=$arr; 
         return $found;
     }
@@ -337,8 +337,6 @@ eot;
     public function genautoload($file, $namespaces, $namespacesAlt, $pathAbsolute, $autoruns)
     {
 
-        
-        
         $template = <<<'EOD'
 <?php
 /**
@@ -482,8 +480,6 @@ EOD;
         $template = str_replace('{{extension}}', $this->extension, $template);
         $template = str_replace('{{date}}', date('Y/m/d h:i:s'), $template);
 
-        
-        
         if ($this->savefile) {
             $ok = file_put_contents($file, $template);
             if ($ok) {
@@ -656,7 +652,6 @@ EOD;
     {
 
         $path = $this->fixSeparator($path);
-        
 
         if (strpos($path, $this->baseGen) == 0) {
             $min1 = strripos($path, '/');
@@ -908,7 +903,6 @@ EOD;
                 . " kbytes</b> (less is better, it's an estimate of the memory used by the map)", 'statinfo');
             $this->addLog('Map size Compressed: <b>' . round($this->statByteUsedCompressed / 1024, 1)
                 . " kbytes</b> (less is better, it's an estimate of the memory used by the map)", 'statinfo');
-            
         } else {
             $this->addLog('No folder specified');
         }
@@ -936,7 +930,6 @@ EOD;
             default:
                 return 'The worst';
         }
-        
     }
 
     /**
