@@ -213,8 +213,7 @@ eot;
         $arr = $paths;
         $foundIndex = 0;
         $found = [];
-        foreach ($arr as $key => $item) {
-
+        foreach ($arr as $item) {
             if (strlen($item) > 10) { // we compress path of at least 20 characters.
                 $maxcount = 0;
                 $last = strlen($item);
