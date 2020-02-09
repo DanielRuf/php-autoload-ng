@@ -51,7 +51,6 @@ class AutoLoadOne
     public $statByteUsed = 1024;
     public $statByteUsedCompressed = 1024;
     public $fileConfig = 'autoloadone.json';
-
     public $extension = '.php';
 
     private $excludeNSArr;
