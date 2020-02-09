@@ -7,21 +7,6 @@ namespace eftec\AutoLoadOne;
 //*************************************************************
 use Exception;
 
-if (!defined('_AUTOLOAD_USER')) {
-    define('_AUTOLOAD_USER', 'autoloadone');
-} // user (web interface)
-if (!defined('_AUTOLOAD_PASSWORD')) {
-    define('_AUTOLOAD_PASSWORD', 'autoloadone');
-} // password (web interface)
-if (!defined('_AUTOLOAD_ENTER')) {
-    define('_AUTOLOAD_ENTER', true);
-} // if you want to auto login (skip user and password) then set to true
-if (!defined('_AUTOLOAD_SELFRUN')) {
-    define('_AUTOLOAD_SELFRUN', true);
-} // if you want to self run the class.
-if (!defined('_AUTOLOAD_ONLYCLI')) {
-    define('_AUTOLOAD_ONLYCLI', false);
-} // if you want to use only cli. If true, it disabled the web interface.
 if (!defined('_AUTOLOAD_SAVEPARAM')) {
     define('_AUTOLOAD_SAVEPARAM', true);
 } // true if you want to save the parameters.
@@ -279,70 +264,6 @@ eot;
         return true;
     }
 
-    private function initWeb()
-    {
-        ob_start();
-        // Not in cli-mode
-        session_start();
-        $this->logged = $_SESSION['log'];
-        if (!$this->logged) {
-            $user = $_POST['user'];
-            $password = $_POST['password'];
-            if (($user == _AUTOLOAD_USER && $password == _AUTOLOAD_PASSWORD) || _AUTOLOAD_ENTER) {
-                $_SESSION['log'] = '1';
-                $this->logged = 1;
-            } else {
-                sleep(1); // sleep a second
-                $_SESSION['log'] = '0';
-                session_destroy();
-            }
-            session_write_close();
-        } else {
-            $this->button = $_POST['button'];
-            if (!$this->button) {
-                $loadOk = $this->loadParam();
-                if ($loadOk === false) {
-                    $this->addLog('Unable to load configuration file <b>' . $this->fileConfig
-                        . '</b>. It is not obligatory', 'warning');
-                }
-            } else {
-                $this->debugMode = isset($_GET['debug']) ? true : false;
-                $this->rooturl = $this->removeTrailSlash($_POST['rooturl'] ? $_POST['rooturl'] : $this->rooturl);
-                $this->fileGen = $this->removeTrailSlash($_POST['fileGen'] ? $_POST['fileGen'] : $this->fileGen);
-                $this->fileGen = ($this->fileGen == '.') ? $this->rooturl : $this->fileGen;
-                $this->excludeNS = $this->cleanInputFolder(
-                    $this->removeTrailSlash(
-                        $_POST['excludeNS'] ? $_POST['excludeNS'] : $this->excludeNS
-                    )
-                );
-                $this->excludePath = $this->cleanInputFolder(
-                    $this->removeTrailSlash(
-                        $_POST['excludePath'] ? $_POST['excludePath'] : $this->excludePath
-                    )
-                );
-                $this->externalPath = $this->cleanInputFolder(
-                    $this->removeTrailSlash(
-                        $_POST['externalPath'] ? $_POST['externalPath'] : $this->externalPath
-                    )
-                );
-                $this->savefile = ($_POST['savefile']) ? $_POST['savefile'] : $this->savefile;
-                $this->savefileName = ($_POST['savefileName']) ? $_POST['savefileName'] : $this->savefileName;
-                $this->stop = $_POST['stop'];
-                $this->compression = $_POST['compression'];
-                $ok = $this->saveParam();
-                if ($ok === false) {
-                    $this->addLog('Unable to save configuration file <b>' . $this->fileConfig
-                        . '</b>. It is not obligatory.', 'warning');
-                }
-            }
-            if ($this->button == 'logout') {
-                session_destroy();
-                $this->logged = 0;
-                session_write_close();
-            }
-        }
-    }
-
     /**
      * @param $value
      *
@@ -413,11 +334,8 @@ eot;
         if (php_sapi_name() == 'cli') {
             $this->initSapi();
         } else {
-            if (_AUTOLOAD_ONLYCLI) {
-                echo 'You should run it as a command line parameter.';
-                die(1);
-            }
-            $this->initWeb();
+            echo 'You should run it as a command line parameter.';
+            die(1);
         }
     }
 
@@ -795,36 +713,7 @@ EOD;
 
     public function addLog($txt, $type = '')
     {
-        if (php_sapi_name() == 'cli') {
-            echo "\t" . $txt . "\n";
-        } else {
-            switch ($type) {
-                case 'error':
-                    $this->log .= "<div class='bg-danger'>$txt</div>";
-                    break;
-                case 'warning':
-                    $this->log .= "<div class='bg-warning'>$txt</div>";
-                    break;
-                case 'info':
-                    $this->log .= "<div class='bg-primary'>$txt</div>";
-                    break;
-                case 'success':
-                    $this->log .= "<div class='bg-success'>$txt</div>";
-                    break;
-                case 'stat':
-                    $this->logStat .= "<div >$txt</div>";
-                    break;
-                case 'statinfo':
-                    $this->logStat .= "<div class='bg-primary'>$txt</div>";
-                    break;
-                case 'staterror':
-                    $this->logStat .= "<div class='bg-danger'>$txt</div>";
-                    break;
-                default:
-                    $this->log .= "<div>$txt</div>";
-                    break;
-            }
-        }
+        echo "\t" . $txt . "\n";
     }
 
     /**
@@ -1037,10 +926,11 @@ EOD;
 
     private function evaluation($percentage)
     {
+        if ($percentage === 0) {
+            return 'How?';
+        }
+
         switch (true) {
-            case $percentage === 0:
-                return 'How?';
-                break;
             case $percentage < 10:
                 return 'Awesome';
                 break;
@@ -1053,8 +943,10 @@ EOD;
             case $percentage < 80:
                 return 'Bad.';
                 break;
+            default:
+                return 'The worst';
         }
-        return 'The worst';
+        
     }
 
     /**
@@ -1103,68 +995,16 @@ EOD;
         if ($this->debugMode) {
             ob_clean();
         }
-
-        if (php_sapi_name() == 'cli') {
-            $t2 = microtime(true);
-            echo "\n" . (round(($t2 - $this->t1) * 1000) / 1000) . " sec. Finished\n";
-        } else {
-            if (!$this->logged) {
-                // login
-            } else {
-                // settings
-                $web = str_replace('{{rooturl}}', $this->rooturl, $web);
-                $web = str_replace('{{fileGen}}', $this->fileGen, $web);
-                $web = str_replace('{{extension}}', $this->extension, $web);
-
-                $web = str_replace('{{excludeNS}}', $this->excludeNS, $web);
-                $web = str_replace('{{externalPath}}', $this->externalPath, $web);
-                $web = str_replace('{{excludePath}}', $this->excludePath, $web);
-                $web = str_replace('{{savefile}}', ($this->savefile) ? 'checked' : '', $web);
-                $web = str_replace('{{savefileName}}', $this->savefileName, $web);
-                $web = str_replace('{{stop}}', ($this->stop) ? 'checked' : '', $web);
-                $web = str_replace('{{compression}}', ($this->compression) ? 'checked' : '', $web);
-
-                $web = str_replace('{{log}}', $this->log, $web);
-                $web = str_replace('{{logstat}}', $this->logStat, $web);
-                $web = str_replace('{{version}}', $this::VERSION, $web);
-                $web = str_replace('{{result}}', $this->result, $web);
-
-                $this->cli = "php autoloadone.php -folder \"{$this->rooturl}\" -filegen \"{$this->fileGen}\" -save ";
-
-                $tmp=($this->compression ? 'yes' : 'no'); 
-                $this->cli .= "-compression {$tmp} ";
-                
-                
-                $tmp = str_replace("\n", '', $this->excludeNS);
-                $tmp = str_replace("\r", '', $tmp);
-                $this->cli .= "-excludens \"{$tmp}\" ";
-
-                $tmp = str_replace("\n", '', $this->externalPath);
-                $tmp = str_replace("\r", '', $tmp);
-                $this->cli .= "-externalpath \"{$tmp}\" ";
-
-                $tmp = str_replace("\n", '', $this->excludePath);
-                $tmp = str_replace("\r", '', $tmp);
-                $this->cli .= "-excludepath \"{$tmp}\"";
-
-                $web = str_replace('{{cli}}', $this->cli, $web);
-
-                $t2 = microtime(true);
-                $ms = (round(($t2 - $this->t1) * 1000) / 1000) . ' sec.';
-
-                $web = str_replace('{{ms}}', $ms, $web);
-                echo $web;
-            }
-        }
+        $t2 = microtime(true);
+        echo "\n" . (round(($t2 - $this->t1) * 1000) / 1000) . " sec. Finished\n";
+        return;
     }
 } // end class AutoLoadOne
 
-if (_AUTOLOAD_SELFRUN || php_sapi_name() == 'cli') {
-    $auto = new AutoLoadOne();
-    $auto->init();
-    $auto->process();
-    $auto->render();
-}
+$auto = new AutoLoadOne();
+$auto->init();
+$auto->process();
+$auto->render();
 
 // @noautoload
 /*
