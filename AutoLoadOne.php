@@ -1083,7 +1083,7 @@ EOD;
         foreach ($exclusions as $ex) {
             if ($ex != '') {
                 if (substr($ex, -1, 1) == '*') {
-                    $bool = $this->startwith($path, substr($ex, 0, -1));
+                    $bool = $this->startswith($path, substr($ex, 0, -1));
                     if ($bool) {
                         return true;
                     }
