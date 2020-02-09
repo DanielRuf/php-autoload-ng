@@ -595,8 +595,7 @@ EOD;
             }
             
         }
-        $result = rtrim($result, ",\n");
-        return $result;
+        return rtrim($result, ",\n");
     }
 
     public function listFolderFiles($dir)
