@@ -41,8 +41,6 @@ class AutoLoadOne
     public $log = '';
     public $logStat = '';
     public $result = '';
-    public $cli = '';
-    public $logged = false;
     public $current = '';
     public $t1 = 0;
     public $debugMode = false;
@@ -711,7 +709,7 @@ EOD;
         return rtrim($dir, '/'); // remove trailing /
     }
 
-    public function addLog($txt, $type = '')
+    public function addLog($txt)
     {
         echo "\t" . $txt . "\n";
     }
@@ -992,9 +990,6 @@ EOD;
 
     public function render()
     {
-        if ($this->debugMode) {
-            ob_clean();
-        }
         $t2 = microtime(true);
         echo "\n" . (round(($t2 - $this->t1) * 1000) / 1000) . " sec. Finished\n";
         return;
