@@ -1095,7 +1095,7 @@ EOD;
 
     public function endswith($string, $test)
     {
-        return substr_compare($strig, $test, -strlen($test)) === 0;
+        return substr_compare($string, $test, -strlen($test)) === 0;
     }
 
     public function render()
