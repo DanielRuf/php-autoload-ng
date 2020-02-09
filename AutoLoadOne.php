@@ -760,7 +760,6 @@ EOD;
         if (strpos($path, $this->baseGen) == 0) {
             $min1 = strripos($path, '/');
             $min2 = strripos($this->baseGen . '/', '/');
-            //$min=min(strlen($path),strlen($this->baseGen));
             $min = min($min1, $min2);
             $baseCommon = $min;
 
@@ -770,11 +769,6 @@ EOD;
                     break;
                 }
             }
-            /*if (substr($path,1,2)==':/') {
-                // windows style c:/somefolder
-                $baseCommon=0;
-            }
-            */
             // moving down the relative path (/../../)
             $c = substr_count(substr($this->baseGen, $baseCommon), '/');
             $r = str_repeat('/..', $c);
