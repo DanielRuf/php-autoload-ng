@@ -876,24 +876,17 @@ EOD;
     {
         foreach ($exclusions as $ex) {
             if ($ex != '') {
-                if (substr($ex, -1, 1) == '*') {
-                    $bool = $this->startswith($path, substr($ex, 0, -1));
-                    if ($bool) {
-                        return true;
-                    }
+                if (substr($ex, -1, 1) == '*' && $this->startswith($path, substr($ex, 0, -1))) {
+                    return true;
                 }
-                if (substr($ex, 0, 1) == '*') {
-                    $bool = $this->endswith($path, $ex);
-                    if ($bool) {
-                        return true;
-                    }
+                if (substr($ex, 0, 1) == '*' && $this->endswith($path, $ex)) {
+                    return true;
                 }
                 if (strpos($ex, '*') === false && $path == $ex) {
                     return true;
                 }
             }
         }
-
         return false;
     }
 
