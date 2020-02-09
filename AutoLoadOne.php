@@ -84,10 +84,8 @@ class AutoLoadOne
         $this->fileGen = getcwd(); // dirname($_SERVER['SCRIPT_FILENAME']);
         $this->rooturl = getcwd(); // dirname($_SERVER['SCRIPT_FILENAME']);
         $this->t1 = microtime(true);
-        $this->fileConfig
-            = basename($_SERVER['SCRIPT_FILENAME']); // the config name shares the same name than the php but with extension .json
+        $this->fileConfig = basename($_SERVER['SCRIPT_FILENAME']); // the config name shares the same name than the php but with extension .json
         $this->fileConfig = getcwd() . '/' . str_replace($this->extension, '.json', $this->fileConfig);
-        //var_dump($this->fileConfig);
     }
 
     private function getAllParametersCli()
